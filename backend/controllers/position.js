@@ -7,7 +7,7 @@ exports.getCommitteeMembers = async (req, res) => {
         "SELECT * FROM users WHERE position = ?",
         ["Committee member"]
       );
-      console.log(rows);
+      // console.log(rows);
       
       res.status(200).json(rows);  // Return the committee members
     } catch (error) {
