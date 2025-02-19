@@ -45,6 +45,11 @@ import CustomTheme from './utils/CustomTheme';  // Import your custom theme
 import { ThemeProvider } from '@mui/material/styles';  // Import ThemeProvider
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+// import BlogManager from './pages/BlogManager';
+import { Create } from '@mui/icons-material';
+import CreateBlog from './pages/blogs/CreateBlog';
+import BlogTabs from './pages/blogs/BlogTabs';
+import AllMembers from './pages/AllMembers';
 
 
 function App() {
@@ -110,6 +115,22 @@ function App() {
               element={
                 <DashboardLayout>
                   <SearchDonationByNmae />
+                </DashboardLayout>
+              }
+            />
+             <Route
+              path="/blog-create"
+              element={
+                <DashboardLayout>
+                  <BlogTabs />
+                </DashboardLayout>
+              }
+            />
+             <Route
+              path="/all-mmebers"
+              element={
+                <DashboardLayout>
+                  <AllMembers />
                 </DashboardLayout>
               }
             />

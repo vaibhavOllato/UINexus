@@ -6,52 +6,6 @@ require("dotenv").config();
 
 // User Registration
 
-// exports.register = async (req, res) => {
-//   try {
-//     const { firstName, lastName, gender, phone, email, password, place } = req.body;
-
-//     if (!firstName || !lastName || !gender || !phone || !email || !password || !place) {
-//       return res.status(400).json({ message: "All fields are required." });
-//     }
-
-//     console.log("Checking existing user:", email, phone);
-//     const [rows] = await db.promise().query(
-//       "SELECT * FROM users WHERE email = ? OR phone = ?",
-//       [email, phone]
-//     );
-    
-//     console.log("Existing User Data:", rows);
-//     if (rows.length > 0) {
-//       return res.status(400).json({ message: "Email or phone already exists." });
-//     }
-
-//     let pratishtanID;
-//     try {
-//       pratishtanID = await generatePratishtanID();
-//     } catch (err) {
-//       console.error("PratishtanID Generation Error:", err);
-//       return res.status(500).json({ message: "Error generating PratishtanID" });
-//     }
-
-//     if (!password || password.length < 6) {
-//       return res.status(400).json({ message: "Password must be at least 6 characters" });
-//     }
-
-//     const hashedPassword = await bcrypt.hash(password, 10);
-
-//     console.log("Registering new user...");
-//     await db.promise().query(
-//       "INSERT INTO users (pratishtanID, firstName, lastName, gender, phone, email, password, place) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
-//       [pratishtanID, firstName, lastName, gender, phone, email, hashedPassword, place]
-//     );
-
-//     res.status(201).json({ message: "User registered successfully", pratishtanID });
-//   } catch (error) {
-//     console.error("Server Error:", error);
-//     res.status(500).json({ message: "Server error", error: error.message });
-//   }
-// };
-
 exports.register = async (req, res) => {
 
   try {
@@ -137,4 +91,36 @@ exports.login = async (req, res) => {
     res.status(500).json({ message: "Server error", error });
   }
 };
+
+// Update Member Details
+exports.updateMember = async (req, res) => {
+  try {
+    const { pratishtanID } = req.params;
+    const { firstName, lastName, gender, phone, email, place, position } = req.body;
+
+    // Check if the user exists
+    const [existingUser] = await db.promise().query(
+      "SELECT * FROM users WHERE pratishtanID = ?",
+      [pratishtanID]
+    );
+
+    if (existingUser.length === 0) {
+      return res.status(404).json({ message: "Member not found" });
+    }
+
+    // Update the member's details
+    await db.promise().query(
+      "UPDATE users SET firstName = ?, lastName = ?, gender = ?, phone = ?, email = ?, place = ?, position = ? WHERE pratishtanID = ?",
+      [firstName, lastName, gender, phone, email, place, position, pratishtanID]
+    );
+
+    res.status(200).json({ message: "Member updated successfully" });
+  } catch (error) {
+    console.error("Update Error:", error);
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+
+
+
 

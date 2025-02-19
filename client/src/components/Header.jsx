@@ -1,53 +1,18 @@
-// import React from "react";
-// import { AppBar, Toolbar, Typography, Box, IconButton } from "@mui/material";
-
-// const Header = () => {
-
-//   return (
-//     <>
-//       <AppBar
-//         position="fixed"
-//         className="header"
-//         sx={{
-//           backgroundColor: "#347474",
-//           zIndex: (theme) => theme.zIndex.drawer + 1,
-//         }}
-//       >
-//         <Toolbar className="toolbar">
-//           {/* Logo Section */}
-//           {/* <img src={LOGO} alt="Logo" className="logo-image" /> */}
-//           {/* Title Section (Center Text) */}
-//           <Typography variant="h5" className="title">
-//             Ollato Admin Panel
-//           </Typography>
-//           {/* Profile Icon Section */}
-//           <Box className="profile">
-//             <Typography variant="body1" className="username">
-//             Admin
-//             </Typography>
-//           </Box>
-//         </Toolbar>
-//       </AppBar>
-//     </>
-//   );
-// };
-// export default Header;
-
-
 import React from "react";
 import { AppBar, Toolbar, Typography, Box } from "@mui/material";
 import { useAuth } from "../context/AuthContext";
+import { useTheme } from "@mui/material/styles";
 
 const Header = () => {
+  const theme = useTheme();
   const { user } = useAuth();
-
   return (
     <>
       <AppBar
         position="fixed"
         className="header"
         sx={{
-          backgroundColor: "#347474",
+          backgroundColor: theme.palette.primary.main,
           zIndex: (theme) => theme.zIndex.drawer + 1,
         }}
       >

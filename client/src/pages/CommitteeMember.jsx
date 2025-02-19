@@ -1,32 +1,31 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import { Card, CardContent, Typography, Grid, Box, Avatar } from '@mui/material';
-import { Person, Phone, LocationOn, Email } from '@mui/icons-material'; // Importing icons
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  Box,
+  Typography,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+} from "@mui/material";
+import { useTheme } from "@mui/material/styles";
 
 const CommitteeMember = () => {
+  const theme = useTheme();
   const [committeeMembers, setCommitteeMembers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
-  // Function to determine the card color based on position
-  const getCardColor = (position) => {
-    switch (position) {
-      case 'Committee member':
-        return '#f44336'; // Red
-      case 'Secretary':
-        return '#2196f3'; // Blue
-      case 'Member':
-        return '#4caf50'; // Green
-      default:
-        return '#D8E8E4'; // Grey
-    }
-  };
 
   // Fetch committee members when the component mounts
   useEffect(() => {
     const fetchCommitteeMembers = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/api/person/committee-members');
+        const response = await axios.get(
+          "http://localhost:5000/api/person/committee-members"
+        );
         setCommitteeMembers(response.data); // Set the fetched data
         setLoading(false); // Set loading state to false after data is fetched
       } catch (err) {
@@ -47,42 +46,119 @@ const CommitteeMember = () => {
   }
 
   return (
-    <div>
-      <h1>Committee Members</h1>
-      <Grid container spacing={3}>
-        {committeeMembers.map((member) => (
-          <Grid item xs={12} sm={6} md={4} key={member.id}>
-            <Card sx={{ backgroundColor: getCardColor(member.position), color: 'black' }}>
-              <CardContent>
-                {/* Centered User Icon and Name */}
-                <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: 2 }}>
-                  <Avatar sx={{ bgcolor: '#3f51b5', width: 60, height: 60, marginBottom: 1 }}>
-                    <Person sx={{ fontSize: 30 }} />
-                  </Avatar>
-                  <Typography variant="h6" align="center">
-                    {member.firstName} {member.lastName}
-                  </Typography>
-                </Box>
-
-                {/* Member's Details */}
-                <Typography variant="body1" color="textSecondary" display="flex" alignItems="center">
-                  <Person sx={{ marginRight: 1 }} /> Position: {member.position}
-                </Typography>
-                <Typography variant="body2" color="textSecondary" display="flex" alignItems="center">
-                  <Phone sx={{ marginRight: 1 }} /> Phone: {member.phone}
-                </Typography>
-                <Typography variant="body2" color="textSecondary" display="flex" alignItems="center">
-                  <LocationOn sx={{ marginRight: 1 }} /> Place: {member.place}
-                </Typography>
-                <Typography variant="body2" color="textSecondary" display="flex" alignItems="center">
-                  <Email sx={{ marginRight: 1 }} /> Email: {member.email}
-                </Typography>
-              </CardContent>
-            </Card>
-          </Grid>
-        ))}
-      </Grid>
-    </div>
+    <Box>
+      <Box
+        display="flex"
+        justifyContent="space-between"
+        alignItems="center"
+        marginBottom={2}
+      >
+        <Typography variant="h5">Committee Members</Typography>
+      </Box>
+      <TableContainer component={Paper} sx={{ boxShadow: 3 }}>
+        <Table sx={{ minWidth: 650 }} aria-label="committee members table">
+          <TableHead>
+            <TableRow
+              sx={{
+                backgroundColor: theme.palette.primary.main,
+                color: theme.palette.common.white,
+              }}
+            >
+              {" "}
+              {/* Dark header color */}
+              <TableCell
+                align="center"
+                sx={{
+                  backgroundColor: theme.palette.primary.main,
+                  color: theme.palette.common.white,
+                }}
+              >
+                Sr. No.
+              </TableCell>{" "}
+              {/* Added Sr. No. column */}
+              <TableCell
+                align="center"
+                sx={{
+                  backgroundColor: theme.palette.primary.main,
+                  color: theme.palette.common.white,
+                }}
+              >
+                Name
+              </TableCell>
+              <TableCell
+                align="center"
+                sx={{
+                  backgroundColor: theme.palette.primary.main,
+                  color: theme.palette.common.white,
+                }}
+              >
+                Position
+              </TableCell>
+              <TableCell
+                align="center"
+                sx={{
+                  backgroundColor: theme.palette.primary.main,
+                  color: theme.palette.common.white,
+                }}
+              >
+                Phone
+              </TableCell>
+              <TableCell
+                align="center"
+                sx={{
+                  backgroundColor: theme.palette.primary.main,
+                  color: theme.palette.common.white,
+                }}
+              >
+                Location
+              </TableCell>
+              <TableCell
+                align="center"
+                sx={{
+                  backgroundColor: theme.palette.primary.main,
+                  color: theme.palette.common.white,
+                }}
+              >
+                Email
+              </TableCell>
+              <TableCell
+                align="center"
+                sx={{
+                  backgroundColor: theme.palette.primary.main,
+                  color: theme.palette.common.white,
+                }}
+              >
+                Gender
+              </TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {committeeMembers.map((member, index) => (
+              <TableRow
+                key={member.id}
+                sx={{
+                  "&:hover": {
+                    backgroundColor: "#f5f5f5", // Hover effect on rows
+                  },
+                }}
+              >
+                <TableCell align="center">{index + 1}</TableCell>{" "}
+                {/* Serial Number */}
+                <TableCell align="center">
+                  {member.firstName} {member.lastName}
+                </TableCell>
+                <TableCell align="center">{member.position}</TableCell>
+                <TableCell align="center">{member.phone}</TableCell>
+                <TableCell align="center">{member.place}</TableCell>
+                <TableCell align="center">{member.email}</TableCell>
+                <TableCell align="center">{member.gender}</TableCell>{" "}
+                {/* Displaying Gender */}
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+    </Box>
   );
 };
 

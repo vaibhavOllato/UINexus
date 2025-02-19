@@ -2,17 +2,20 @@ import React, { useState } from 'react';
 import { TextField, Button, Typography, Box, Paper, Grid, Alert, MenuItem, Select, InputLabel, FormControl } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { useTheme } from "@mui/material/styles";
+
 
 const Register = () => {
+  const theme = useTheme();
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
-    gender: 'Male',  // Default value
+    gender: '',  // Default value
     phone: '',
     email: '',
     password: '',
     place: '',  // Default empty
-    position: 'Member',  // Added default position value
+    position: '',  // Added default position value
   });
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -50,8 +53,8 @@ const Register = () => {
   };
 
   return (
-    <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', backgroundColor: '#f5f5f5' }}>
-      <Paper sx={{ padding: 3, width: '100%', maxWidth: 400, backgroundColor: '#ffffff' }}>
+    <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', backgroundColor: theme.palette.primary.light }}>
+      <Paper sx={{ padding: 3, width: '100%', maxWidth: 600, backgroundColor: '#ffffff' }}>
         <Typography variant="h5" gutterBottom color="primary" align="center">
           Register
         </Typography>
@@ -136,7 +139,7 @@ const Register = () => {
                 sx={{ marginBottom: 2 }}
               />
             </Grid>
-            <Grid item xs={12}>
+            <Grid item xs={12} sm={6}>
               <TextField
                 label="Place"
                 variant="outlined"
@@ -158,9 +161,9 @@ const Register = () => {
                   onChange={handleChange}
                   label="Position"
                 >
-                  <MenuItem value="Committe member">Committe member</MenuItem>
+                  <MenuItem value="Committee member">Committe member</MenuItem>
                   <MenuItem value="Members">Members</MenuItem>
-                  <MenuItem value="Admin">Admin</MenuItem>
+                  {/* <MenuItem value="Admin">Admin</MenuItem> */}
                 </Select>
               </FormControl>
             </Grid>
@@ -172,8 +175,8 @@ const Register = () => {
                 type="submit"
                 disabled={loading}
                 sx={{
-                  backgroundColor: '#3f51b5',
-                  '&:hover': { backgroundColor: '#303f9f' },
+                  backgroundColor: theme.palette.primary.main,
+                  '&:hover': theme.palette.primary.light,
                 }}
               >
                 {loading ? 'Registering...' : 'Register'}

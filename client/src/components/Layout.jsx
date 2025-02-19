@@ -7,7 +7,7 @@ const Layout = ({ children }) => {
     <>
       <Sidebar />
       <Header />
-      <main style={{ marginLeft: 240, padding: '20px' }}>
+      <main style={{ marginLeft: 100, padding: '10px' }}>
         {children}
       </main>
     </>

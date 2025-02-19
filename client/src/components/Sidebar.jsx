@@ -1,5 +1,5 @@
-import { React, useState } from "react";
-import "../styles/sidebar.css";
+import React, { useState } from "react";
+// import "../styles/sidebar.css";
 import {
   Toolbar,
   Drawer,
@@ -10,47 +10,63 @@ import {
   IconButton,
 } from "@mui/material";
 import { TbLayoutSidebarLeftCollapse } from "react-icons/tb";
-import { FaUserFriends, FaCog } from "react-icons/fa"; // Importing icons for Member List and Accounts
+import { FaUserFriends, FaCog, FaNewspaper } from "react-icons/fa";
 import LogoutModal from "../components/Logout";
 import { useAuth } from "../context/AuthContext";
-import { useNavigate } from "react-router-dom";
-import LogoutIcon from "@mui/icons-material/Logout"; // Importing the Logout Icon
-import { MdArrowDropDown } from "react-icons/md"; // Importing dropdown icon
-import { Link } from "react-router-dom";
+import { useNavigate, useLocation, Link } from "react-router-dom";
+import LogoutIcon from "@mui/icons-material/Logout";
+import { MdArrowDropDown } from "react-icons/md";
 import { Dashboard } from "@mui/icons-material";
-import { GiTwoCoins, GiPerson } from "react-icons/gi"; // Importing icons for Member and Committee Member
+import { GiTwoCoins, GiPerson } from "react-icons/gi";
+import { useTheme } from "@mui/material/styles";
 
 const Sidebar = () => {
-  const drawerWidth = 250;
+  const theme = useTheme();
+  const drawerWidth = 230;
   const [open, setOpen] = useState(true);
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [memberListOpen, setMemberListOpen] = useState(false); // State to manage dropdown visibility
+  const [memberListOpen, setMemberListOpen] = useState(false);
   const { logout } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const toggleDrawer = () => {
     setOpen(!open);
   };
 
-  // Define the handleOpenDialog function to open the dialog
   const handleOpenDialog = () => {
     setDialogOpen(true);
   };
 
-  // Define the handleCloseDialog function to close the dialog
   const handleCloseDialog = () => {
     setDialogOpen(false);
   };
 
-  // Handle logout
   const handleLogout = () => {
     logout();
     navigate("/");
   };
 
-  // Handle toggle for Member List dropdown
   const toggleMemberList = () => {
     setMemberListOpen(!memberListOpen);
+  };
+
+  // Helper function to check if a route is active
+  const isActive = (path) => location.pathname === path;
+
+  // Active and inactive styles now use theme values for text colors.
+  const activeStyles = {
+    backgroundColor: theme.palette.primary.main,
+    borderRight: `4px solid ${theme.palette.primary.nav}`,
+    // Use the theme's contrast text for the primary color for good readability
+    color: theme.palette.getContrastText(theme.palette.primary.main),
+  };
+
+  const inactiveStyles = {
+    backgroundColor: theme.palette.primary.light,
+    borderRight: "none",
+    // Use the theme's default text color
+    color: theme.palette.text.primary,
   };
 
   return (
@@ -66,16 +82,16 @@ const Sidebar = () => {
             width: drawerWidth,
             "& .MuiDrawer-paper": {
               width: drawerWidth,
-              backgroundColor: "#D8E8E4",
-              color: "black",
+              backgroundColor: theme.palette.primary.light,
+              color: theme.palette.text.primary,
             },
           }),
           ...(!open && {
             width: 40,
             "& .MuiDrawer-paper": {
               width: 50,
-              backgroundColor: "#D8E8E4",
-              color: "black",
+              backgroundColor: theme.palette.primary.light,
+              color: theme.palette.text.primary,
             },
           }),
         }}
@@ -99,9 +115,10 @@ const Sidebar = () => {
             className="sidebar-item"
             component={Link}
             to="/dashboard"
+            sx={isActive("/dashboard") ? activeStyles : inactiveStyles}
           >
             <ListItemIcon className="sidebar-item-icon">
-              <Dashboard /> {/* Add the Dashboard icon */}
+              <Dashboard />
             </ListItemIcon>
             {open && (
               <ListItemText primary="Dashboard" className="sidebar-item-text" />
@@ -109,9 +126,20 @@ const Sidebar = () => {
           </ListItem>
 
           {/* Member List Item with Dropdown */}
-          <ListItem button onClick={toggleMemberList} className="sidebar-item">
+          <ListItem
+            button
+            onClick={toggleMemberList}
+            className="sidebar-item"
+            // sx={
+            //   isActive("/member") ||
+            //   isActive("/committee") ||
+            //   (memberListOpen && location.pathname.includes("member"))
+            //     ? activeStyles
+            //     : inactiveStyles
+            // }
+          >
             <ListItemIcon className="sidebar-item-icon">
-              <FaUserFriends /> {/* Icon for Member List */}
+              <FaUserFriends />
             </ListItemIcon>
             {open && (
               <ListItemText
@@ -125,17 +153,36 @@ const Sidebar = () => {
             </IconButton>
           </ListItem>
 
-          {/* Member List Dropdown in Sidebar */}
+          {/* Member List Dropdown */}
           {memberListOpen && (
             <List>
               <ListItem
                 button
                 className="sidebar-item"
                 component={Link}
-                to="/committee"
+                to="/all-mmebers"
+                sx={isActive("/all-mmebers") ? activeStyles : inactiveStyles}
               >
                 <ListItemIcon>
-                  <GiPerson /> {/* Icon for Committee Member */}
+                  <GiTwoCoins />
+                </ListItemIcon>
+                {open && (
+                  <ListItemText
+                    primary="All members"
+                    className="sidebar-item-text"
+                  />
+                )}
+              </ListItem>
+
+              <ListItem
+                button
+                className="sidebar-item"
+                component={Link}
+                to="/committee"
+                sx={isActive("/committee") ? activeStyles : inactiveStyles}
+              >
+                <ListItemIcon>
+                  <GiPerson />
                 </ListItemIcon>
                 {open && (
                   <ListItemText
@@ -145,15 +192,15 @@ const Sidebar = () => {
                 )}
               </ListItem>
 
-              {/* Member Persons Link */}
               <ListItem
                 button
                 className="sidebar-item"
                 component={Link}
                 to="/member"
+                sx={isActive("/member") ? activeStyles : inactiveStyles}
               >
                 <ListItemIcon>
-                  <GiTwoCoins /> {/* Icon for Member */}
+                  <GiTwoCoins />
                 </ListItemIcon>
                 {open && (
                   <ListItemText
@@ -167,25 +214,42 @@ const Sidebar = () => {
 
           {/* Accounts Item */}
           <ListItem
-            button="true"
+            button
             className="sidebar-item"
             component={Link}
             to="/account-dashboard"
+            sx={isActive("/account-dashboard") ? activeStyles : inactiveStyles}
           >
             <ListItemIcon className="sidebar-item-icon">
-              <FaCog /> {/* Icon for Accounts */}
+              <FaCog />
             </ListItemIcon>
             {open && (
               <ListItemText primary="Accounts" className="sidebar-item-text" />
             )}
           </ListItem>
 
+          {/* Blogs Item */}
+          <ListItem
+            button
+            className="sidebar-item"
+            component={Link}
+            to="/blog-create"
+            sx={isActive("/blog-create") ? activeStyles : inactiveStyles}
+          >
+            <ListItemIcon className="sidebar-item-icon">
+              <FaNewspaper />
+            </ListItemIcon>
+            {open && (
+              <ListItemText primary="Blogs" className="sidebar-item-text" />
+            )}
+          </ListItem>
+
           <hr />
 
           {/* Logout Item */}
-          <ListItem button onClick={handleOpenDialog}>
+          <ListItem button onClick={handleOpenDialog} sx={inactiveStyles}>
             <ListItemIcon>
-              <LogoutIcon /> {/* Logout Icon */}
+              <LogoutIcon />
             </ListItemIcon>
             {open && <ListItemText primary="Logout" />}
           </ListItem>
@@ -203,7 +267,8 @@ const Sidebar = () => {
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              backgroundColor: "#347474",
+              backgroundColor: theme.palette.primary.main,
+              color:theme.palette.background.default,
               borderRadius: "50%",
               padding: "8px",
               width: "48px",
@@ -212,6 +277,7 @@ const Sidebar = () => {
               transform: open ? "rotate(0deg)" : "rotate(180deg)",
               "&:hover": {
                 backgroundColor: "#ECECEC",
+                color:theme.palette.primary.main,
               },
             }}
           >
